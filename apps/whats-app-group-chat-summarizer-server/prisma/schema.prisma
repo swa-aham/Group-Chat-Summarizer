@@ -1,0 +1,38 @@
+datasource db {
+  provider = "postgresql"
+  url      = env("DB_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model Summary {
+  chatFile    ChatFile? @relation(fields: [chatFileId], references: [id])
+  chatFileId  String?
+  createdAt   DateTime  @default(now())
+  id          String    @id @default(cuid())
+  summaryText String?
+  updatedAt   DateTime  @updatedAt
+}
+
+model ChatMessage {
+  chatFile    ChatFile? @relation(fields: [chatFileId], references: [id])
+  chatFileId  String?
+  createdAt   DateTime  @default(now())
+  id          String    @id @default(cuid())
+  messageText String?
+  sender      String?
+  timestamp   DateTime?
+  updatedAt   DateTime  @updatedAt
+}
+
+model ChatFile {
+  chatMessages ChatMessage[]
+  createdAt    DateTime      @default(now())
+  fileContent  String?
+  fileName     String?
+  id           String        @id @default(cuid())
+  summaries    Summary[]
+  updatedAt    DateTime      @updatedAt
+}
